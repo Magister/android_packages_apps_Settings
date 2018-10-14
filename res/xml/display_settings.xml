@@ -115,6 +115,11 @@
                 android:title="@string/tap_to_wake"
                 android:summary="@string/tap_to_wake_summary" />
 
+        <SwitchPreference
+                android:key="edge_tap"
+                android:title="@string/edge_tap"
+                android:summary="@string/edge_tap_summary" />
+
         <!-- Prevent accidental wake-up -->
         <cyanogenmod.preference.CMSystemSettingSwitchPreference
                 android:key="proximity_on_wake"

@@ -6783,6 +6783,12 @@
    <!-- Summary for take to wake setting [CHAR LIMIT=90] -->
    <string name="tap_to_wake_summary">Double-tap anywhere on the screen to wake device</string>
 
+   <!-- Label for edge tap setting [CHAR LIMIT=30] -->
+   <string name="edge_tap">Edge tap</string>
+
+   <!-- Summary for edge tap setting [CHAR LIMIT=90] -->
+   <string name="edge_tap_summary">Enable edge tap gestures</string>
+
     <!-- Title of a preference item that will show the user's preferences for this app's priority for opening links to websites that it claims to support [CHAR LIMIT=30] -->
     <string name="domain_urls_title">Opening links</string>
 

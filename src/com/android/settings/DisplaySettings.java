@@ -63,6 +63,7 @@ import java.util.List;
 
 import static android.provider.Settings.Secure.CAMERA_GESTURE_DISABLED;
 import static android.provider.Settings.Secure.DOUBLE_TAP_TO_WAKE;
+import static android.provider.Settings.Secure.EDGE_TAP;
 import static android.provider.Settings.Secure.DOZE_ENABLED;
 import static android.provider.Settings.Secure.WAKE_GESTURE_ENABLED;
 import static android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE;
@@ -88,6 +89,7 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
     private static final String KEY_LIFT_TO_WAKE = "lift_to_wake";
     private static final String KEY_DOZE = "doze";
     private static final String KEY_TAP_TO_WAKE = "tap_to_wake";
+    private static final String KEY_EDGE_TAP = "edge_tap";
     private static final String KEY_THEME = "theme";
     private static final String KEY_AUTO_BRIGHTNESS = "auto_brightness";
     private static final String KEY_AUTO_ROTATE = "auto_rotate";
@@ -110,6 +112,7 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
     private SwitchPreference mLiftToWakePreference;
     private SwitchPreference mDozePreference;
     private SwitchPreference mTapToWakePreference;
+    private SwitchPreference mEdgeTapPreference;
     private SwitchPreference mAutoBrightnessPreference;
     private SwitchPreference mCameraGesturePreference;
     private ListPreference mRecentsClearAllLocation;
@@ -181,6 +184,15 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
                     mTapToWakePreference.setOnPreferenceChangeListener(this);
                 } else {
                     displayPrefs.removePreference(mTapToWakePreference);
+                }
+            }
+
+            mEdgeTapPreference = (SwitchPreference) findPreference(KEY_EDGE_TAP);
+            if (mEdgeTapPreference != null) {
+                if (isEdgeTapAvailable(getResources())) {
+                    mEdgeTapPreference.setOnPreferenceChangeListener(this);
+                } else {
+                    displayPrefs.removePreference(mEdgeTapPreference);
                 }
             }
 
@@ -336,6 +348,10 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
         return res.getBoolean(com.android.internal.R.bool.config_supportDoubleTapWake);
     }
 
+    private static boolean isEdgeTapAvailable(Resources res) {
+        return res.getBoolean(com.android.internal.R.bool.config_supportEdgeTap);
+    }
+
     private static boolean isAutomaticBrightnessAvailable(Resources res) {
         return res.getBoolean(com.android.internal.R.bool.config_automatic_brightness_available);
     }
@@ -425,6 +441,12 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
             mTapToWakePreference.setChecked(value != 0);
         }
 
+        // Update edge tap if it is available.
+        if (mEdgeTapPreference != null) {
+            int value = Settings.Secure.getInt(getContentResolver(), EDGE_TAP, 0);
+            mEdgeTapPreference.setChecked(value != 0);
+        }
+
         // Update doze if it is available.
         if (mDozePreference != null) {
             int value = Settings.Secure.getInt(getContentResolver(), DOZE_ENABLED, 1);
@@ -499,6 +521,10 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
         if (preference == mTapToWakePreference) {
             boolean value = (Boolean) objValue;
             Settings.Secure.putInt(getContentResolver(), DOUBLE_TAP_TO_WAKE, value ? 1 : 0);
+        }
+        if (preference == mEdgeTapPreference) {
+            boolean value = (Boolean) objValue;
+            Settings.Secure.putInt(getContentResolver(), EDGE_TAP, value ? 1 : 0);
         }
         if (preference == mCameraGesturePreference) {
             boolean value = (Boolean) objValue;
@@ -650,6 +676,9 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
                     }
                     if (!isTapToWakeAvailable(context.getResources())) {
                         result.add(KEY_TAP_TO_WAKE);
+                    }
+                    if (!isEdgeTapAvailable(context.getResources())) {
+                        result.add(KEY_EDGE_TAP);
                     }
                     if (!isCameraGestureAvailable(context.getResources())) {
                         result.add(KEY_CAMERA_GESTURE);
